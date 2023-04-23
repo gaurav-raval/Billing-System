@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body {
+    font-family: sans-serif;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+
+tfoot td {
+    font-weight: bold;
+}
+
+</style>
+
+
+</head>
+
+
+<body>
+    <h1>Invoice</h1>
+
+    <h2>Order No:</h2>
+    <p id="order-no"></p>
+
+    <h2>Date:</h2>
+    <p id="date"></p>
+
+    <h2>Delivery Status:</h2>
+    <p id="delivery-status"></p>
+
+    <h2>From:</h2>
+    <address id="from-address"></address>
+
+    <h2>To:</h2>
+    <address id="to-address"></address>
+
+    <h2>Order:</h2>
+    <table id="order-table">
+        <thead>
+            <tr><th>Item</th><th>Quantity</th><th>Price</th></tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot></tfoot>
+     </table>
+
+     <script >
+        const foodPrices = {
+    pizza: 10,
+    pasta: 8,
+    salad: 6
+};
+
+const orderNoElement = document.querySelector('#order-no');
+const dateElement = document.querySelector('#date');
+const deliveryStatusElement = document.querySelector('#delivery-status');
+const fromAddressElement = document.querySelector('#from-address');
+const toAddressElement = document.querySelector('#to-address');
+const orderTableBodyElement = document.querySelector('#order-table tbody');
+const orderTableFootElement = document.querySelector('#order-table tfoot');
+
+const orderNo = Math.floor(Math.random() * 1000000);
+orderNoElement.textContent = orderNo;
+
+const date = new Date();
+dateElement.textContent = date.toLocaleDateString();
+
+deliveryStatusElement.textContent = 'Pending';
+
+fromAddressElement.innerHTML = 'Restaurant<br>123 Main St<br>City, State 12345';
+
+toAddressElement.innerHTML = 'Delivery Address<br>456 Elm St<br>City, State 67890';
+
+const order = JSON.parse(localStorage.getItem('order'));
+
+let subtotal = 0;
+
+for (const food in order) {
+    const quantity = order[food];
+    const price = foodPrices[food] * quantity;
+    subtotal += price;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${food}</td><td>${quantity}</td><td>${price}</td>`;
+    orderTableBodyElement.appendChild(tr);
+}
+
+const gst = subtotal * 0.18;
+const deliveryCharge = 40;
+const total = subtotal + gst + deliveryCharge;
+
+orderTableFootElement.innerHTML = `
+    <tr><td colspan="2">Subtotal</td><td>${subtotal}</td></tr>
+    <tr><td colspan="2">GST (18%)</td><td>${gst}</td></tr>
+    <tr><td colspan="2">Delivery Charge</td><td>${deliveryCharge}</td></tr>
+    <tr><td colspan="2">Total</td><td>${total}</td></tr>
+`;
+
+     </script>
+
+</body>
+
+</html>
+
